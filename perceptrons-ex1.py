@@ -37,14 +37,32 @@ class Perceptron(object):
 
         while allCorrect == False:
             allCorrect = True
-            for input, label in zippedList: # ZADANIE DOMOWE 2 - losowosc
-                # input = noisy(input) # ZADANIE DOMOWE - zaburzenie wejscia
-                prediction = self.output(input)
-                err = label - prediction
-                if err != 0:
-                    self.weights[1:] += self.learning_rate * err * input
-                    self.weights[0] += self.learning_rate * err
+            randomIndex = random.randint(0, len(zippedList) - 1)
+
+            input = zippedList[randomIndex][0]
+            label = zippedList[randomIndex][1]
+            # input = noisy(input) # ZADANIE DOMOWE - zaburzenie wejscia
+            prediction = self.output(input)
+            err = label - prediction
+            if err != 0:
+                self.weights[1:] += self.learning_rate * err * input
+                self.weights[0] += self.learning_rate * err
+                allCorrect = False
+            else:
+                if self.checkAllPredictions(zippedList) == False:
                     allCorrect = False
+
+        print(self.weights)
+
+  def checkAllPredictions(self, training_data_list):
+        for input, label in training_data_list:
+            prediction = self.output(input)
+            err = label - prediction
+            if err != 0:
+                print("Returning false")
+                return False
+        print("Returning true")
+        return True
 
   def output(self, input):
     summation = np.dot(self.weights[1:], input) + self.weights[0]
