@@ -13,7 +13,7 @@ training_inputs = []
 
 class Perceptron(object):
 
-  def __init__(self, no_of_inputs, learning_rate=0.01, iterations=100):
+  def __init__(self, no_of_inputs, learning_rate=0.01, iterations=1000):
     self.iterations = iterations
     self.learning_rate = learning_rate
     self.no_of_inputs = no_of_inputs
@@ -22,14 +22,11 @@ class Perceptron(object):
 
   def train(self, training_data, labels):
     for _ in range(self.iterations):
-      for input, label in zip(training_data, labels): # ZADANIE DOMOWE 2 - losowosc
+      for input, label in zip(training_data, labels): 
         # input = noisy(input) # ZADANIE DOMOWE - zaburzenie wejscia
         prediction = self.output(input)
         self.weights[1:] += self.learning_rate * (label - prediction) * input
         self.weights[0] += self.learning_rate * (label - prediction)
-        # ZADANIE DOMOWE 3 - warunek stopu
-        # ZADANIE DOMOWE 4 - PLA + RPLA
-        # h(x) = (ax + b) % m
 
   def trainSPLA(self, training_data, labels):
         allCorrect = False
@@ -53,6 +50,73 @@ class Perceptron(object):
                     allCorrect = False
 
         print(self.weights)
+
+  def trainPLA(self, training_data, labels):
+        allCorrect = False
+        zippedList = list(zip(training_data, labels))
+        bestWeights = np.zeros(self.no_of_inputs + 1)
+        bestWeightsLife = 0
+        weightsLife = 0
+
+        for _ in range(self.iterations):
+            randomIndex = random.randint(0, len(zippedList) - 1)
+
+            input = zippedList[randomIndex][0]
+            label = zippedList[randomIndex][1]
+            # input = noisy(input) # ZADANIE DOMOWE - zaburzenie wejscia
+            prediction = self.output(input)
+            err = label - prediction
+            if err != 0:
+                self.weights[1:] += self.learning_rate * err * input
+                self.weights[0] += self.learning_rate * err
+                weightsLife = 0
+            else:
+                weightsLife += 1
+                if weightsLife > bestWeightsLife:
+                    bestWeightsLife = weightsLife
+                    bestWeights = self.weights
+        
+        self.weights = bestWeights
+
+  def trainRPLA(self, training_data, labels):
+        allCorrect = False
+        zippedList = list(zip(training_data, labels))
+        bestWeights = np.zeros(self.no_of_inputs + 1)
+        bestWeightsLife = 0
+        bestWeightsCorrectExamples = 0
+        weightsLife = 0
+        correctExamples = 0
+        for _ in range(self.iterations):
+            randomIndex = random.randint(0, len(zippedList) - 1)
+
+            input = zippedList[randomIndex][0]
+            label = zippedList[randomIndex][1]
+            # input = noisy(input) # ZADANIE DOMOWE - zaburzenie wejscia
+            prediction = self.output(input)
+            err = label - prediction
+            if err != 0:
+                self.weights[1:] += self.learning_rate * err * input
+                self.weights[0] += self.learning_rate * err
+                weightsLife = 0
+                correctExamples = 0
+            else:
+                weightsLife += 1
+                correctExamples = self.correctPredictions(zippedList)
+                if weightsLife > bestWeightsLife and correctExamples > bestWeightsCorrectExamples:
+                    bestWeightsLife = weightsLife
+                    bestWeights = self.weights
+                    bestWeightsCorrectExamples = correctExamples
+        
+        self.weights = bestWeights
+
+  def correctPredictions(self, training_data_list):
+        result = 0
+        for input, label in training_data_list:
+            prediction = self.output(input)
+            err = label - prediction
+            if err == 0:
+                result += 1
+        return result
 
   def checkAllPredictions(self, training_data_list):
         for input, label in training_data_list:
@@ -153,7 +217,7 @@ def setPerceptrons():
     for i in range(10):
         labels = np.zeros(10)
         labels[i] = 1
-        perceptrons[i].trainSPLA(training_inputs, labels)
+        perceptrons[i].trainRPLA(training_inputs, labels)
 
 def printPerceptronsOutput(): 
     for x in range(10):
