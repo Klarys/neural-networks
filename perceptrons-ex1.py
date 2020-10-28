@@ -243,7 +243,7 @@ def drawPerceptronsOutput():
     pygame.display.flip()
 
 def drawUI():
-    buttonTexts = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Reset", "train PLA", "train SPLA", "train RPLA", "Zaszumianie"]
+    buttonTexts = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Reset", "train PLA", "train SPLA", "train RPLA", "Generate noise"]
     
     for buttonNumber in range(len(buttonTexts)):
         pygame.draw.rect(screen, (102, 153, 255), pygame.Rect(300,10 + (buttonHeight+15)*buttonNumber,170,buttonHeight))
@@ -253,19 +253,176 @@ def drawUI():
 
 def detectButtonClicked(x, y): #returns a number of button clicked
     startHeight = 10
-    print(x)
-    print(y)
-    print(no_of_ui_buttons)
     for buttonNumber in range(no_of_ui_buttons):
         buttonHeightStart = startHeight + (buttonHeight+15)*buttonNumber
         buttonHeightEnd = startHeight + (buttonHeight+15)*buttonNumber + buttonHeight
         if(x>=300 and x<=470 and y>= buttonHeightStart and y<=buttonHeightEnd):
-            print(buttonNumber)
+            print(f'Button number {buttonNumber} clicked')
+            activateButton(buttonNumber)
             return buttonNumber
     return -1
 
+def buttonZero():
+    print("button Zero clicked")
+    global values
+    values = np.array([
+        [1.0,1.0,1.0,1.0,1.0],
+        [1.0,0.0,0.0,0.0,1.0],
+        [1.0,0.0,0.0,0.0,1.0],
+        [1.0,0.0,0.0,0.0,1.0],
+        [1.0,1.0,1.0,1.0,1.0]
+    ])
 
-# def activateButton(buttonNumber):
+def buttonOne():
+    print("button One clicked")
+    global values
+    values = np.array([
+        [0.0,0.0,0.0,1.0,0.0],
+        [0.0,0.0,1.0,1.0,0.0],
+        [0.0,1.0,0.0,1.0,0.0],
+        [1.0,0.0,0.0,1.0,0.0],
+        [0.0,0.0,0.0,1.0,0.0]
+    ])
+    return "button One"
+
+def buttonTwo():
+    print("button Two clicked")
+    global values
+    values = np.array([
+        [0.0,1.0,1.0,1.0,0.0],
+        [1.0,0.0,0.0,0.0,1.0],
+        [0.0,0.0,0.0,1.0,0.0],
+        [0.0,0.0,1.0,0.0,0.0],
+        [1.0,1.0,1.0,1.0,1.0]
+    ])
+    return "button Two"
+
+def buttonThree():
+    print("button Three clicked")
+    global values
+    values = np.array([
+        [1.0,1.0,1.0,1.0,1.0],
+        [0.0,0.0,0.0,0.0,1.0],
+        [0.0,0.0,1.0,1.0,1.0],
+        [0.0,0.0,0.0,0.0,1.0],
+        [1.0,1.0,1.0,1.0,1.0]
+    ])
+    return "button Three"
+
+def buttonFour():
+    print("button Four clicked")
+    global values
+    values = np.array([
+        [1.0,0.0,0.0,0.0,0.0],
+        [1.0,0.0,0.0,1.0,0.0],
+        [1.0,1.0,1.0,1.0,1.0],
+        [0.0,0.0,0.0,1.0,0.0],
+        [0.0,0.0,0.0,1.0,0.0]
+    ])
+    return "button Four"
+
+def buttonFive():
+    print("button Five clicked")
+    global values
+    values = np.array([
+        [1.0,1.0,1.0,1.0,1.0],
+        [1.0,0.0,0.0,0.0,0.0],
+        [1.0,1.0,1.0,1.0,1.0],
+        [0.0,0.0,0.0,0.0,1.0],
+        [1.0,1.0,1.0,1.0,1.0]
+    ])
+    return "button Five"
+
+def buttonSix():
+    print("button Six clicked")
+    global values
+    values = np.array([
+        [1.0,1.0,1.0,1.0,1.0],
+        [1.0,0.0,0.0,0.0,0.0],
+        [1.0,1.0,1.0,1.0,1.0],
+        [1.0,0.0,0.0,0.0,1.0],
+        [1.0,1.0,1.0,1.0,1.0]
+    ])
+    return "button Six"
+
+def buttonSeven():
+    print("button Seven clicked")
+    global values
+    values = np.array([
+        [1.0,1.0,1.0,1.0,1.0],
+        [0.0,0.0,0.0,1.0,0.0],
+        [0.0,0.0,1.0,0.0,0.0],
+        [0.0,1.0,0.0,0.0,0.0],
+        [1.0,0.0,0.0,0.0,0.0]
+    ])
+    return "button "
+
+def buttonEight():
+    print("button Eight clicked")
+    global values
+    values = np.array([
+        [1.0,1.0,1.0,1.0,1.0],
+        [1.0,0.0,0.0,0.0,1.0],
+        [1.0,1.0,1.0,1.0,1.0],
+        [1.0,0.0,0.0,0.0,1.0],
+        [1.0,1.0,1.0,1.0,1.0]
+    ])
+    return "button Eight"
+
+def buttonNine():
+    print("button Nine clicked")
+    global values
+    values = np.array([
+        [1.0,1.0,1.0,1.0,1.0],
+        [1.0,0.0,0.0,0.0,1.0],
+        [1.0,1.0,1.0,1.0,1.0],
+        [0.0,0.0,0.0,0.0,1.0],
+        [1.0,1.0,1.0,1.0,1.0]
+    ])
+    return "button Nine"
+
+def buttonReset():
+    print("button Reset clicked")
+    return "button Reset"
+
+def buttonPLA():
+    print("button PLA clicked")
+    return "button PLA"
+
+def buttonSPLA():
+    print("button SPLA clicked")
+    return "button SPLA"
+
+def buttonRPLA():
+    print("button RPLA clicked")
+    return "button RPLA"
+
+def buttonNoise():
+    print("button Noise clicked")
+    return "button Noise"
+
+def activateButton(buttonNumber):
+    switcher = {
+        0: buttonZero,
+        1: buttonOne,
+        2: buttonTwo,
+        3: buttonThree,
+        4: buttonFour,
+        5: buttonFive,
+        6: buttonSix,
+        7: buttonSeven,
+        8: buttonEight,
+        9: buttonNine,
+        10: buttonReset,
+        11: buttonPLA,
+        12: buttonSPLA,
+        13: buttonRPLA,
+        14: buttonNoise
+    }
+    # Get the function from switcher dictionary
+    func = switcher.get(buttonNumber, lambda: "Invalid button number")
+    # Execute the function
+    func()
 
 def draw_rectangles():
     left = 10
