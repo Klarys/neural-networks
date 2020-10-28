@@ -5,7 +5,7 @@ import random
 pygame.init()
 pygame.font.init()
 myfont = pygame.font.SysFont('Open Sans', 15)
-screen = pygame.display.set_mode([500, 500])
+screen = pygame.display.set_mode([500, 600])
 values = np.zeros((5,5))
 rects = []
 perceptrons = []
@@ -240,6 +240,17 @@ def drawPerceptronsOutput():
     screen.blit(textsurface,(10,330))
     pygame.display.flip()
 
+def drawUI():
+    buttonTexts = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Reset", "train PLA", "train SPLA", "train RPLA", "Zaszumianie"]
+
+    buttonHeight = 20
+    
+    for buttonNumber in range(len(buttonTexts)):
+        pygame.draw.rect(screen, (102, 153, 255), pygame.Rect(300,10 + (buttonHeight+15)*buttonNumber,170,buttonHeight))
+        textsurface = myfont.render(buttonTexts[buttonNumber], False, (0, 0, 0))
+        screen.blit(textsurface,(310,10 + (buttonHeight+15)*buttonNumber))
+    pygame.display.flip()
+
 def draw_rectangles():
     left = 10
     top = 10
@@ -284,6 +295,7 @@ def main():
     screen.fill((255, 255, 255))
     init_rectangles()
     draw_rectangles()
+    drawUI()
     pygame.display.flip()
     running = True
     
@@ -306,6 +318,7 @@ def main():
                 draw_rectangles()
                 printPerceptronsOutput()
                 drawPerceptronsOutput()
+                drawUI()
 
     pygame.quit()
 
