@@ -10,6 +10,8 @@ values = np.zeros((5,5))
 rects = []
 perceptrons = []
 training_inputs = []
+no_of_ui_buttons = 15
+buttonHeight = 20
 
 class Perceptron(object):
 
@@ -242,14 +244,28 @@ def drawPerceptronsOutput():
 
 def drawUI():
     buttonTexts = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Reset", "train PLA", "train SPLA", "train RPLA", "Zaszumianie"]
-
-    buttonHeight = 20
     
     for buttonNumber in range(len(buttonTexts)):
         pygame.draw.rect(screen, (102, 153, 255), pygame.Rect(300,10 + (buttonHeight+15)*buttonNumber,170,buttonHeight))
         textsurface = myfont.render(buttonTexts[buttonNumber], False, (0, 0, 0))
         screen.blit(textsurface,(310,10 + (buttonHeight+15)*buttonNumber))
     pygame.display.flip()
+
+def detectButtonClicked(x, y): #returns a number of button clicked
+    startHeight = 10
+    print(x)
+    print(y)
+    print(no_of_ui_buttons)
+    for buttonNumber in range(no_of_ui_buttons):
+        buttonHeightStart = startHeight + (buttonHeight+15)*buttonNumber
+        buttonHeightEnd = startHeight + (buttonHeight+15)*buttonNumber + buttonHeight
+        if(x>=300 and x<=470 and y>= buttonHeightStart and y<=buttonHeightEnd):
+            print(buttonNumber)
+            return buttonNumber
+    return -1
+
+
+# def activateButton(buttonNumber):
 
 def draw_rectangles():
     left = 10
@@ -307,6 +323,7 @@ def main():
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
+                detectButtonClicked(pos[0], pos[1])
                 for row in range(len(rects)):
                     for col in range(len(rects[row])):
                         if rects[row][col].collidepoint(pos):
@@ -319,6 +336,7 @@ def main():
                 printPerceptronsOutput()
                 drawPerceptronsOutput()
                 drawUI()
+
 
     pygame.quit()
 
