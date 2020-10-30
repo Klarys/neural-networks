@@ -9,9 +9,82 @@ screen = pygame.display.set_mode([500, 600])
 values = np.zeros((5,5))
 rects = []
 perceptrons = []
+number = [[] for _ in range(10) ]
+number[0] = [
+    [1.0,1.0,1.0,1.0,1.0],
+    [1.0,0.0,0.0,0.0,1.0],
+    [1.0,0.0,0.0,0.0,1.0],
+    [1.0,0.0,0.0,0.0,1.0],
+    [1.0,1.0,1.0,1.0,1.0]
+]
+number[1] = [
+    [0.0,0.0,0.0,1.0,0.0],
+    [0.0,0.0,1.0,1.0,0.0],
+    [0.0,1.0,0.0,1.0,0.0],
+    [1.0,0.0,0.0,1.0,0.0],
+    [0.0,0.0,0.0,1.0,0.0]
+]
+number[2] = [
+    [0.0,1.0,1.0,1.0,0.0],
+    [1.0,0.0,0.0,0.0,1.0],
+    [0.0,0.0,0.0,1.0,0.0],
+    [0.0,0.0,1.0,0.0,0.0],
+    [1.0,1.0,1.0,1.0,1.0]
+]
+number[3] = [
+    [1.0,1.0,1.0,1.0,1.0],
+    [0.0,0.0,0.0,0.0,1.0],
+    [0.0,0.0,1.0,1.0,1.0],
+    [0.0,0.0,0.0,0.0,1.0],
+    [1.0,1.0,1.0,1.0,1.0]
+]
+number[4] = [
+    [1.0,0.0,0.0,0.0,0.0],
+    [1.0,0.0,0.0,1.0,0.0],
+    [1.0,1.0,1.0,1.0,1.0],
+    [0.0,0.0,0.0,1.0,0.0],
+    [0.0,0.0,0.0,1.0,0.0]
+]
+number[5] = [
+    [1.0,1.0,1.0,1.0,1.0],
+    [1.0,0.0,0.0,0.0,0.0],
+    [1.0,1.0,1.0,1.0,1.0],
+    [0.0,0.0,0.0,0.0,1.0],
+    [1.0,1.0,1.0,1.0,1.0]
+]
+number[6] = [
+    [1.0,1.0,1.0,1.0,1.0],
+    [1.0,0.0,0.0,0.0,0.0],
+    [1.0,1.0,1.0,1.0,1.0],
+    [1.0,0.0,0.0,0.0,1.0],
+    [1.0,1.0,1.0,1.0,1.0]
+]
+number[7] = [
+    [1.0,1.0,1.0,1.0,1.0],
+    [0.0,0.0,0.0,1.0,0.0],
+    [0.0,0.0,1.0,0.0,0.0],
+    [0.0,1.0,0.0,0.0,0.0],
+    [1.0,0.0,0.0,0.0,0.0]
+]
+number[8] = [
+    [1.0,1.0,1.0,1.0,1.0],
+    [1.0,0.0,0.0,0.0,1.0],
+    [1.0,1.0,1.0,1.0,1.0],
+    [1.0,0.0,0.0,0.0,1.0],
+    [1.0,1.0,1.0,1.0,1.0]
+]
+number[9] = [
+    [1.0,1.0,1.0,1.0,1.0],
+    [1.0,0.0,0.0,0.0,1.0],
+    [1.0,1.0,1.0,1.0,1.0],
+    [0.0,0.0,0.0,0.0,1.0],
+    [1.0,1.0,1.0,1.0,1.0]
+]
 training_inputs = []
+training_inputs = [ np.ravel(n) for n in number ]
 no_of_ui_buttons = 15
 buttonHeight = 20
+startingWeights = []
 
 class Perceptron(object):
 
@@ -21,6 +94,7 @@ class Perceptron(object):
     self.no_of_inputs = no_of_inputs
     self.weights = np.random.rand(self.no_of_inputs + 1)
     self.weights = self.weights/10
+    startingWeights = self.weights
 
   def train(self, training_data, labels):
     for _ in range(self.iterations):
@@ -51,7 +125,6 @@ class Perceptron(object):
                 if self.checkAllPredictions(zippedList) == False:
                     allCorrect = False
 
-        print(self.weights)
 
   def trainPLA(self, training_data, labels):
         allCorrect = False
@@ -121,13 +194,16 @@ class Perceptron(object):
         return result
 
   def checkAllPredictions(self, training_data_list):
+        x = 0
         for input, label in training_data_list:
             prediction = self.output(input)
             err = label - prediction
+            print(f'{x}: {err}')
             if err != 0:
-                print("Returning false")
+                print("returning false")
                 return False
-        print("Returning true")
+            x += 1
+        print("returning true")
         return True
 
   def output(self, input):
@@ -142,91 +218,17 @@ def setPerceptrons():
     for _ in range(10):
         perceptrons.append(Perceptron(5*5))
 
-    number = [[] for _ in range(10) ]
-    number[0] = [
-        [1.0,1.0,1.0,1.0,1.0],
-        [1.0,0.0,0.0,0.0,1.0],
-        [1.0,0.0,0.0,0.0,1.0],
-        [1.0,0.0,0.0,0.0,1.0],
-        [1.0,1.0,1.0,1.0,1.0]
-    ]
-    number[1] = [
-        [0.0,0.0,0.0,1.0,0.0],
-        [0.0,0.0,1.0,1.0,0.0],
-        [0.0,1.0,0.0,1.0,0.0],
-        [1.0,0.0,0.0,1.0,0.0],
-        [0.0,0.0,0.0,1.0,0.0]
-    ]
-    number[2] = [
-        [0.0,1.0,1.0,1.0,0.0],
-        [1.0,0.0,0.0,0.0,1.0],
-        [0.0,0.0,0.0,1.0,0.0],
-        [0.0,0.0,1.0,0.0,0.0],
-        [1.0,1.0,1.0,1.0,1.0]
-    ]
-    number[3] = [
-        [1.0,1.0,1.0,1.0,1.0],
-        [0.0,0.0,0.0,0.0,1.0],
-        [0.0,0.0,1.0,1.0,1.0],
-        [0.0,0.0,0.0,0.0,1.0],
-        [1.0,1.0,1.0,1.0,1.0]
-    ]
-    number[4] = [
-        [1.0,0.0,0.0,0.0,0.0],
-        [1.0,0.0,0.0,1.0,0.0],
-        [1.0,1.0,1.0,1.0,1.0],
-        [0.0,0.0,0.0,1.0,0.0],
-        [0.0,0.0,0.0,1.0,0.0]
-    ]
-    number[5] = [
-        [1.0,1.0,1.0,1.0,1.0],
-        [1.0,0.0,0.0,0.0,0.0],
-        [1.0,1.0,1.0,1.0,1.0],
-        [0.0,0.0,0.0,0.0,1.0],
-        [1.0,1.0,1.0,1.0,1.0]
-    ]
-    number[6] = [
-        [1.0,1.0,1.0,1.0,1.0],
-        [1.0,0.0,0.0,0.0,0.0],
-        [1.0,1.0,1.0,1.0,1.0],
-        [1.0,0.0,0.0,0.0,1.0],
-        [1.0,1.0,1.0,1.0,1.0]
-    ]
-    number[7] = [
-        [1.0,1.0,1.0,1.0,1.0],
-        [0.0,0.0,0.0,1.0,0.0],
-        [0.0,0.0,1.0,0.0,0.0],
-        [0.0,1.0,0.0,0.0,0.0],
-        [1.0,0.0,0.0,0.0,0.0]
-    ]
-    number[8] = [
-        [1.0,1.0,1.0,1.0,1.0],
-        [1.0,0.0,0.0,0.0,1.0],
-        [1.0,1.0,1.0,1.0,1.0],
-        [1.0,0.0,0.0,0.0,1.0],
-        [1.0,1.0,1.0,1.0,1.0]
-    ]
-    number[9] = [
-        [1.0,1.0,1.0,1.0,1.0],
-        [1.0,0.0,0.0,0.0,1.0],
-        [1.0,1.0,1.0,1.0,1.0],
-        [0.0,0.0,0.0,0.0,1.0],
-        [1.0,1.0,1.0,1.0,1.0]
-    ]
-
-    training_inputs = [ np.ravel(n) for n in number ]
-
     for i in range(10):
         labels = np.zeros(10)
         labels[i] = 1
-        perceptrons[i].trainRPLA(training_inputs, labels)
+        perceptrons[i].train(training_inputs, labels)
 
 def printPerceptronsOutput(): 
     for x in range(10):
         print(f'Perceptron {x}: {perceptrons[x].output(np.ravel(values))}')
 
 def drawPerceptronsOutput():
-    result = "Digits detected by perceptrons:"
+    result = ""
 
     detected = False
 
@@ -238,8 +240,15 @@ def drawPerceptronsOutput():
     if detected == False:
         result += " None."
 
-    textsurface = myfont.render(result[:-1], False, (0, 0, 0)) #wypisanie bez ostatniego znaku - przecinka
-    screen.blit(textsurface,(10,330))
+    textSurface1 = myfont.render("Digits detected by perceptrons:", False, (0, 0, 0))
+    textSurface2 = myfont.render(result[:-1], False, (0, 0, 0)) #wypisanie bez ostatniego znaku - przecinka
+    screen.blit(textSurface1,(10,330))
+    screen.blit(textSurface2,(10,350))
+    pygame.display.flip()
+
+def drawTrainingFinished():
+    textSurface = myfont.render("Training finished.", False, (0, 0, 0))
+    screen.blit(textSurface,(10,500))
     pygame.display.flip()
 
 def drawUI():
@@ -383,18 +392,50 @@ def buttonNine():
 
 def buttonReset():
     print("button Reset clicked")
+    global values
+    values = np.zeros((5,5))#problem
     return "button Reset"
 
 def buttonPLA():
     print("button PLA clicked")
+    global values
+    values = np.zeros((5,5))
+    for i in range(10):
+        perceptrons[i].weights = np.random.rand(perceptrons[i].no_of_inputs + 1)
+        perceptrons[i].weights = perceptrons[i].weights/10
+
+    for i in range(10):
+        labels = np.zeros(10)
+        labels[i] = 1
+        perceptrons[i].trainPLA(training_inputs, labels)
     return "button PLA"
 
 def buttonSPLA():
     print("button SPLA clicked")
+    global values
+    values = np.zeros((5,5))
+    for i in range(10):
+        perceptrons[i].weights = np.random.rand(perceptrons[i].no_of_inputs + 1)
+        perceptrons[i].weights = perceptrons[i].weights/10
+
+    for i in range(10):
+        labels = np.zeros(10)
+        labels[i] = 1
+        perceptrons[i].trainSPLA(training_inputs, labels)
     return "button SPLA"
 
 def buttonRPLA():
     print("button RPLA clicked")
+    global values
+    values = np.zeros((5,5))
+    for i in range(10):
+        perceptrons[i].weights = np.random.rand(perceptrons[i].no_of_inputs + 1)
+        perceptrons[i].weights = perceptrons[i].weights/10
+
+    for i in range(10):
+        labels = np.zeros(10)
+        labels[i] = 1
+        perceptrons[i].trainRPLA(training_inputs, labels)
     return "button RPLA"
 
 def buttonNoise():
@@ -480,20 +521,29 @@ def main():
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                detectButtonClicked(pos[0], pos[1])
-                for row in range(len(rects)):
-                    for col in range(len(rects[row])):
-                        if rects[row][col].collidepoint(pos):
-                            if values[row][col] == 0:
-                                values[row][col] = 1
-                            else:
-                                values[row][col] = 0
-                screen.fill((255, 255, 255))
-                draw_rectangles()
-                printPerceptronsOutput()
-                drawPerceptronsOutput()
-                drawUI()
+                print(values)
+                detectedButton = detectButtonClicked(pos[0], pos[1])
+                if detectedButton < 11 or detectedButton > 13:
 
+                    for row in range(len(rects)):
+                        for col in range(len(rects[row])):
+                            if rects[row][col].collidepoint(pos):
+                                if values[row][col] == 0:
+                                    values[row][col] = 1
+                                else:
+                                    values[row][col] = 0
+                    print(values)
+                    screen.fill((255, 255, 255))
+                    draw_rectangles()
+                    printPerceptronsOutput()
+                    print(values)
+                    drawPerceptronsOutput()
+                    drawUI()
+                else:
+                    screen.fill((255, 255, 255))
+                    draw_rectangles()
+                    drawUI()
+                    drawTrainingFinished()
 
     pygame.quit()
 
