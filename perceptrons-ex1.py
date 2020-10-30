@@ -292,7 +292,6 @@ def buttonOne():
         [1.0,0.0,0.0,1.0,0.0],
         [0.0,0.0,0.0,1.0,0.0]
     ])
-    return "button One"
 
 def buttonTwo():
     print("button Two clicked")
@@ -304,7 +303,6 @@ def buttonTwo():
         [0.0,0.0,1.0,0.0,0.0],
         [1.0,1.0,1.0,1.0,1.0]
     ])
-    return "button Two"
 
 def buttonThree():
     print("button Three clicked")
@@ -316,7 +314,6 @@ def buttonThree():
         [0.0,0.0,0.0,0.0,1.0],
         [1.0,1.0,1.0,1.0,1.0]
     ])
-    return "button Three"
 
 def buttonFour():
     print("button Four clicked")
@@ -328,7 +325,6 @@ def buttonFour():
         [0.0,0.0,0.0,1.0,0.0],
         [0.0,0.0,0.0,1.0,0.0]
     ])
-    return "button Four"
 
 def buttonFive():
     print("button Five clicked")
@@ -340,7 +336,6 @@ def buttonFive():
         [0.0,0.0,0.0,0.0,1.0],
         [1.0,1.0,1.0,1.0,1.0]
     ])
-    return "button Five"
 
 def buttonSix():
     print("button Six clicked")
@@ -352,7 +347,6 @@ def buttonSix():
         [1.0,0.0,0.0,0.0,1.0],
         [1.0,1.0,1.0,1.0,1.0]
     ])
-    return "button Six"
 
 def buttonSeven():
     print("button Seven clicked")
@@ -364,7 +358,6 @@ def buttonSeven():
         [0.0,1.0,0.0,0.0,0.0],
         [1.0,0.0,0.0,0.0,0.0]
     ])
-    return "button "
 
 def buttonEight():
     print("button Eight clicked")
@@ -376,7 +369,6 @@ def buttonEight():
         [1.0,0.0,0.0,0.0,1.0],
         [1.0,1.0,1.0,1.0,1.0]
     ])
-    return "button Eight"
 
 def buttonNine():
     print("button Nine clicked")
@@ -388,13 +380,19 @@ def buttonNine():
         [0.0,0.0,0.0,0.0,1.0],
         [1.0,1.0,1.0,1.0,1.0]
     ])
-    return "button Nine"
 
 def buttonReset():
     print("button Reset clicked")
+    for i in range(10):
+        perceptrons[i].weights = np.random.rand(perceptrons[i].no_of_inputs + 1)
+        perceptrons[i].weights = perceptrons[i].weights/10
     global values
-    values = np.zeros((5,5))#problem
-    return "button Reset"
+    values = np.zeros((5,5))
+
+    for i in range(10):
+        labels = np.zeros(10)
+        labels[i] = 1
+        perceptrons[i].train(training_inputs, labels)
 
 def buttonPLA():
     print("button PLA clicked")
@@ -408,7 +406,6 @@ def buttonPLA():
         labels = np.zeros(10)
         labels[i] = 1
         perceptrons[i].trainPLA(training_inputs, labels)
-    return "button PLA"
 
 def buttonSPLA():
     print("button SPLA clicked")
@@ -422,7 +419,6 @@ def buttonSPLA():
         labels = np.zeros(10)
         labels[i] = 1
         perceptrons[i].trainSPLA(training_inputs, labels)
-    return "button SPLA"
 
 def buttonRPLA():
     print("button RPLA clicked")
@@ -436,11 +432,17 @@ def buttonRPLA():
         labels = np.zeros(10)
         labels[i] = 1
         perceptrons[i].trainRPLA(training_inputs, labels)
-    return "button RPLA"
 
 def buttonNoise():
     print("button Noise clicked")
-    return "button Noise"
+    rows, cols = values.shape
+    for row in range(rows):
+        for value in range(cols):
+            if random.random() <= 0.05:
+                if values[row][value] == 0:
+                    values[row][value] = 1
+                else:
+                    values[row][value] = 0
 
 def activateButton(buttonNumber):
     switcher = {
@@ -502,7 +504,6 @@ def init_rectangles():
         left = 10
         top = top + 50
         rects.append(rects_tmp)
-
 
 def main():
     
