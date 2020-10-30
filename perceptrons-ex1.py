@@ -246,8 +246,8 @@ def drawPerceptronsOutput():
     screen.blit(textSurface2,(10,350))
     pygame.display.flip()
 
-def drawTrainingFinished():
-    textSurface = myfont.render("Training finished.", False, (0, 0, 0))
+def drawMessage(message):
+    textSurface = myfont.render(message, False, (0, 0, 0))
     screen.blit(textSurface,(10,500))
     pygame.display.flip()
 
@@ -515,7 +515,6 @@ def main():
     
     setPerceptrons()
     while running:
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -523,8 +522,8 @@ def main():
                 pos = pygame.mouse.get_pos()
                 print(values)
                 detectedButton = detectButtonClicked(pos[0], pos[1])
-                if detectedButton < 11 or detectedButton > 13:
-
+                screen.fill((255, 255, 255))
+                if detectedButton < 10 or detectedButton > 13:
                     for row in range(len(rects)):
                         for col in range(len(rects[row])):
                             if rects[row][col].collidepoint(pos):
@@ -532,19 +531,15 @@ def main():
                                     values[row][col] = 1
                                 else:
                                     values[row][col] = 0
-                    print(values)
-                    screen.fill((255, 255, 255))
-                    draw_rectangles()
                     printPerceptronsOutput()
-                    print(values)
                     drawPerceptronsOutput()
-                    drawUI()
+                elif detectedButton == 10:
+                    drawMessage("Reset finished.")
                 else:
-                    screen.fill((255, 255, 255))
-                    draw_rectangles()
-                    drawUI()
-                    drawTrainingFinished()
-
+                    drawMessage("Training finished.")
+                draw_rectangles()
+                drawUI()
+                
     pygame.quit()
 
 if __name__ == "__main__":
