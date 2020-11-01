@@ -98,8 +98,8 @@ class Perceptron(object):
 
   def train(self, training_data, labels):
     for _ in range(self.iterations):
-      for input, label in zip(training_data, labels): 
-        # input = noisy(input) # ZADANIE DOMOWE - zaburzenie wejscia
+      for input, label in zip(training_data, labels):
+        input = self.noisy(np.copy(input))
         prediction = self.output(input)
         self.weights[1:] += self.learning_rate * (label - prediction) * input
         self.weights[0] += self.learning_rate * (label - prediction)
@@ -114,7 +114,7 @@ class Perceptron(object):
 
             input = zippedList[randomIndex][0]
             label = zippedList[randomIndex][1]
-            # input = noisy(input) # ZADANIE DOMOWE - zaburzenie wejscia
+            input = self.noisy(np.copy(input))
             prediction = self.output(input)
             err = label - prediction
             if err != 0:
@@ -138,7 +138,7 @@ class Perceptron(object):
 
             input = zippedList[randomIndex][0]
             label = zippedList[randomIndex][1]
-            # input = noisy(input) # ZADANIE DOMOWE - zaburzenie wejscia
+            input = self.noisy(np.copy(input))
             prediction = self.output(input)
             err = label - prediction
             if err != 0:
@@ -166,7 +166,7 @@ class Perceptron(object):
 
             input = zippedList[randomIndex][0]
             label = zippedList[randomIndex][1]
-            # input = noisy(input) # ZADANIE DOMOWE - zaburzenie wejscia
+            input = self.noisy(np.copy(input))
             prediction = self.output(input)
             err = label - prediction
             if err != 0:
@@ -213,6 +213,13 @@ class Perceptron(object):
     else:
       activation = 0
     return activation
+
+  def noisy(self, input):
+    for value in range(len(input)):
+        if random.random() <= 0.005:
+             input[value] = (-1) * input[value] + 1
+    return input
+
 
 def setPerceptrons():
     for _ in range(10):
@@ -439,10 +446,8 @@ def buttonNoise():
     for row in range(rows):
         for value in range(cols):
             if random.random() <= 0.05:
-                if values[row][value] == 0:
-                    values[row][value] = 1
-                else:
-                    values[row][value] = 0
+                values[row][value] = (-1) * values[row][value] + 1
+                    
 
 def activateButton(buttonNumber):
     switcher = {
