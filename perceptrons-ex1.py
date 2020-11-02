@@ -87,6 +87,7 @@ no_of_ui_buttons = 15
 buttonHeight = 20
 startingWeights = []
 currentTrainingType = -1 #-1 for none, 0 - basic, 1-SPLA, 2-PLA, 3-RPLA
+buttonsPressed = []
 
 class Perceptron(object):
 
@@ -304,12 +305,9 @@ def detectButtonClicked(x, y): #returns a number of button clicked
 
 def addExample(buttonNumber):
     global allLabels
-    print(allLabels)
     labels = np.zeros(10)
     labels[buttonNumber] = 1
-    allLabels.append(labels)
-    print(allLabels)
-    
+
     global values
     global training_inputs
     training_inputs.append(np.ravel(values))
@@ -320,12 +318,15 @@ def addExample(buttonNumber):
 
     if(currentTrainingType == 0):
         for i in range(10):
-            if i == buttonNumber:
-                newLabel = 1.0
-            else:
-                newLabel = 0.0
             labelsCopy = allLabels[i].copy()
-            labelsCopy = np.append(labelsCopy, newLabel)
+            print("Range:")
+            print(range(len(buttonsPressed)))
+            for j in range(len(buttonsPressed)):
+                if (i == buttonNumber and i == buttonsPressed[j]) or i == buttonsPressed[j]:
+                    newLabel = 1.0
+                else:
+                    newLabel = 0.0
+                labelsCopy = np.append(labelsCopy, newLabel)
             perceptrons[i].train(training_inputs, labelsCopy)
     elif(currentTrainingType == 1):
         for i in range(10):
@@ -354,11 +355,12 @@ def addExample(buttonNumber):
             labelsCopy = allLabels[i]
             labelsCopy = np.append(labelsCopy, newLabel)
             perceptrons[i].trainRPLA(training_inputs, labelsCopy)
-    training_inputs.pop()
+    # training_inputs.pop()
 
 def buttonZero():
     print("button Zero clicked")
     global values
+    buttonsPressed.append(0)
     values = np.array([
         [1.0,1.0,1.0,1.0,1.0],
         [1.0,0.0,0.0,0.0,1.0],
@@ -370,6 +372,7 @@ def buttonZero():
 def buttonOne():
     print("button One clicked")
     global values
+    buttonsPressed.append(1)
     values = np.array([
         [0.0,0.0,0.0,1.0,0.0],
         [0.0,0.0,1.0,1.0,0.0],
@@ -381,6 +384,7 @@ def buttonOne():
 def buttonTwo():
     print("button Two clicked")
     global values
+    buttonsPressed.append(2)
     values = np.array([
         [0.0,1.0,1.0,1.0,0.0],
         [1.0,0.0,0.0,0.0,1.0],
@@ -392,6 +396,7 @@ def buttonTwo():
 def buttonThree():
     print("button Three clicked")
     global values
+    buttonsPressed.append(3)
     values = np.array([
         [1.0,1.0,1.0,1.0,1.0],
         [0.0,0.0,0.0,0.0,1.0],
@@ -403,6 +408,7 @@ def buttonThree():
 def buttonFour():
     print("button Four clicked")
     global values
+    buttonsPressed.append(4)
     values = np.array([
         [1.0,0.0,0.0,0.0,0.0],
         [1.0,0.0,0.0,1.0,0.0],
@@ -414,6 +420,7 @@ def buttonFour():
 def buttonFive():
     print("button Five clicked")
     global values
+    buttonsPressed.append(5)
     values = np.array([
         [1.0,1.0,1.0,1.0,1.0],
         [1.0,0.0,0.0,0.0,0.0],
@@ -425,6 +432,7 @@ def buttonFive():
 def buttonSix():
     print("button Six clicked")
     global values
+    buttonsPressed.append(6)
     values = np.array([
         [1.0,1.0,1.0,1.0,1.0],
         [1.0,0.0,0.0,0.0,0.0],
@@ -436,6 +444,7 @@ def buttonSix():
 def buttonSeven():
     print("button Seven clicked")
     global values
+    buttonsPressed.append(7)
     values = np.array([
         [1.0,1.0,1.0,1.0,1.0],
         [0.0,0.0,0.0,1.0,0.0],
@@ -447,6 +456,7 @@ def buttonSeven():
 def buttonEight():
     print("button Eight clicked")
     global values
+    buttonsPressed.append(8)
     values = np.array([
         [1.0,1.0,1.0,1.0,1.0],
         [1.0,0.0,0.0,0.0,1.0],
@@ -458,6 +468,7 @@ def buttonEight():
 def buttonNine():
     print("button Nine clicked")
     global values
+    buttonsPressed.append(9)
     values = np.array([
         [1.0,1.0,1.0,1.0,1.0],
         [1.0,0.0,0.0,0.0,1.0],
