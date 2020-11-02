@@ -5,7 +5,7 @@ import random
 pygame.init()
 pygame.font.init()
 myfont = pygame.font.SysFont('Open Sans', 15)
-screen = pygame.display.set_mode([500, 600])
+screen = pygame.display.set_mode([550, 600])
 values = np.zeros((5,5))
 rects = []
 perceptrons = []
@@ -82,9 +82,11 @@ number[9] = [
 ]
 training_inputs = []
 training_inputs = [ np.ravel(n) for n in number ]
+allLabels = []
 no_of_ui_buttons = 15
 buttonHeight = 20
 startingWeights = []
+currentTrainingType = -1 #-1 for none, 0 - basic, 1-SPLA, 2-PLA, 3-RPLA
 
 class Perceptron(object):
 
@@ -97,12 +99,18 @@ class Perceptron(object):
     startingWeights = self.weights
 
   def train(self, training_data, labels):
+    print("Training data:")
+    print(training_data)
+    print("labels:")
+    print(labels)
     for _ in range(self.iterations):
       for input, label in zip(training_data, labels):
         input = self.noisy(np.copy(input))
         prediction = self.output(input)
         self.weights[1:] += self.learning_rate * (label - prediction) * input
         self.weights[0] += self.learning_rate * (label - prediction)
+    global currentTrainingType
+    currentTrainingType = 0
 
   def trainSPLA(self, training_data, labels):
         allCorrect = False
@@ -124,6 +132,8 @@ class Perceptron(object):
             else:
                 if self.checkAllPredictions(zippedList) == False:
                     allCorrect = False
+        global currentTrainingType
+        currentTrainingType = 1
 
 
   def trainPLA(self, training_data, labels):
@@ -152,6 +162,8 @@ class Perceptron(object):
                     bestWeights = self.weights
         
         self.weights = bestWeights
+        global currentTrainingType
+        currentTrainingType = 2
 
   def trainRPLA(self, training_data, labels):
         allCorrect = False
@@ -183,6 +195,8 @@ class Perceptron(object):
                     bestWeightsCorrectExamples = correctExamples
         
         self.weights = bestWeights
+        global currentTrainingType
+        currentTrainingType = 3
 
   def correctPredictions(self, training_data_list):
         result = 0
@@ -228,6 +242,7 @@ def setPerceptrons():
     for i in range(10):
         labels = np.zeros(10)
         labels[i] = 1
+        allLabels.append(labels)
         perceptrons[i].train(training_inputs, labels)
 
 def printPerceptronsOutput(): 
@@ -236,7 +251,6 @@ def printPerceptronsOutput():
 
 def drawPerceptronsOutput():
     result = ""
-
     detected = False
 
     for x in range(10):
@@ -265,6 +279,12 @@ def drawUI():
         pygame.draw.rect(screen, (102, 153, 255), pygame.Rect(300,10 + (buttonHeight+15)*buttonNumber,170,buttonHeight))
         textsurface = myfont.render(buttonTexts[buttonNumber], False, (0, 0, 0))
         screen.blit(textsurface,(310,10 + (buttonHeight+15)*buttonNumber))
+
+    for buttonNumber in range(10):
+        pygame.draw.rect(screen, (2, 1, 116), pygame.Rect(480,10 + (buttonHeight+15)*buttonNumber,30,buttonHeight))
+        textsurface = myfont.render(" + ", False, (230, 230, 230))
+        screen.blit(textsurface,(487,10 + (buttonHeight+15)*buttonNumber))
+
     pygame.display.flip()
 
 def detectButtonClicked(x, y): #returns a number of button clicked
@@ -272,11 +292,44 @@ def detectButtonClicked(x, y): #returns a number of button clicked
     for buttonNumber in range(no_of_ui_buttons):
         buttonHeightStart = startHeight + (buttonHeight+15)*buttonNumber
         buttonHeightEnd = startHeight + (buttonHeight+15)*buttonNumber + buttonHeight
-        if(x>=300 and x<=470 and y>= buttonHeightStart and y<=buttonHeightEnd):
-            print(f'Button number {buttonNumber} clicked')
-            activateButton(buttonNumber)
-            return buttonNumber
+        if(y>= buttonHeightStart and y<=buttonHeightEnd):
+            if(x>=300 and x<=470):
+                print(f'Button number {buttonNumber} clicked')
+                activateButton(buttonNumber)
+                return buttonNumber
+            elif(buttonNumber <10 and x>=487 and x<=517):
+                print(f'Button "+" number {buttonNumber} clicked')
+                addExample(buttonNumber)
     return -1
+
+def addExample(buttonNumber):
+    global allLabels
+    print(allLabels)
+    labels = np.zeros(10)
+    labels[buttonNumber] = 1
+    allLabels.append(labels)
+    print(allLabels)
+    
+    global values
+    global training_inputs
+    training_inputs.append(np.ravel(values))
+
+    for i in range(10):
+        perceptrons[i].weights = np.random.rand(perceptrons[i].no_of_inputs + 1)
+        perceptrons[i].weights = perceptrons[i].weights/10
+
+    if(currentTrainingType == 0):
+        for i in range(len(allLabels)):
+            perceptrons[i].train(training_inputs, allLabels[i])
+    elif(currentTrainingType == 1):
+        for i in range(len(allLabels)):
+            perceptrons[i].trainSPLA(training_inputs, allLabels[i])
+    elif(currentTrainingType == 2):
+        for i in range(len(allLabels)):
+            perceptrons[i].trainPLA(training_inputs, allLabels[i])
+    elif(currentTrainingType == 3):
+        for i in range(len(allLabels)):
+            perceptrons[i].trainRPLA(training_inputs, allLabels[i])
 
 def buttonZero():
     print("button Zero clicked")
