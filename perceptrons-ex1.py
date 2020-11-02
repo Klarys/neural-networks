@@ -322,7 +322,7 @@ def addExample(buttonNumber):
             print("Range:")
             print(range(len(buttonsPressed)))
             for j in range(len(buttonsPressed)):
-                if (i == buttonNumber and i == buttonsPressed[j]) or i == buttonsPressed[j]:
+                if i == buttonsPressed[j]:
                     newLabel = 1.0
                 else:
                     newLabel = 0.0
@@ -334,7 +334,7 @@ def addExample(buttonNumber):
             print("Range:")
             print(range(len(buttonsPressed)))
             for j in range(len(buttonsPressed)):
-                if (i == buttonNumber and i == buttonsPressed[j]) or i == buttonsPressed[j]:
+                if i == buttonsPressed[j]:
                     newLabel = 1.0
                 else:
                     newLabel = 0.0
@@ -346,7 +346,7 @@ def addExample(buttonNumber):
             print("Range:")
             print(range(len(buttonsPressed)))
             for j in range(len(buttonsPressed)):
-                if (i == buttonNumber and i == buttonsPressed[j]) or i == buttonsPressed[j]:
+                if i == buttonsPressed[j]:
                     newLabel = 1.0
                 else:
                     newLabel = 0.0
@@ -358,7 +358,7 @@ def addExample(buttonNumber):
             print("Range:")
             print(range(len(buttonsPressed)))
             for j in range(len(buttonsPressed)):
-                if (i == buttonNumber and i == buttonsPressed[j]) or i == buttonsPressed[j]:
+                if i == buttonsPressed[j]:
                     newLabel = 1.0
                 else:
                     newLabel = 0.0
