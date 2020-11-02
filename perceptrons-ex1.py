@@ -319,17 +319,42 @@ def addExample(buttonNumber):
         perceptrons[i].weights = perceptrons[i].weights/10
 
     if(currentTrainingType == 0):
-        for i in range(len(allLabels)):
-            perceptrons[i].train(training_inputs, allLabels[i])
+        for i in range(10):
+            if i == buttonNumber:
+                newLabel = 1.0
+            else:
+                newLabel = 0.0
+            labelsCopy = allLabels[i].copy()
+            labelsCopy = np.append(labelsCopy, newLabel)
+            perceptrons[i].train(training_inputs, labelsCopy)
     elif(currentTrainingType == 1):
-        for i in range(len(allLabels)):
-            perceptrons[i].trainSPLA(training_inputs, allLabels[i])
+        for i in range(10):
+            if i == buttonNumber:
+                newLabel = 1.0
+            else:
+                newLabel = 0.0
+            labelsCopy = allLabels[i]
+            labelsCopy = np.append(labelsCopy, newLabel)
+            perceptrons[i].trainSPLA(training_inputs, labelsCopy)
     elif(currentTrainingType == 2):
-        for i in range(len(allLabels)):
-            perceptrons[i].trainPLA(training_inputs, allLabels[i])
+        for i in range(10):
+            if i == buttonNumber:
+                newLabel = 1.0
+            else:
+                newLabel = 0.0
+            labelsCopy = allLabels[i]
+            labelsCopy = np.append(labelsCopy, newLabel)
+            perceptrons[i].trainPLA(training_inputs, labelsCopy)
     elif(currentTrainingType == 3):
-        for i in range(len(allLabels)):
-            perceptrons[i].trainRPLA(training_inputs, allLabels[i])
+        for i in range(10):
+            if i == buttonNumber:
+                newLabel = 1.0
+            else:
+                newLabel = 0.0
+            labelsCopy = allLabels[i]
+            labelsCopy = np.append(labelsCopy, newLabel)
+            perceptrons[i].trainRPLA(training_inputs, labelsCopy)
+    training_inputs.pop()
 
 def buttonZero():
     print("button Zero clicked")
