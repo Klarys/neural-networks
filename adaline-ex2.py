@@ -430,7 +430,6 @@ def buttonLeft():
 
 def buttonRight():
     print("button Right clicked")
-    print("button Left clicked")
     rows, cols = values.shape
     print(cols)
     for row in range(rows):
@@ -445,9 +444,35 @@ def buttonRight():
 
 def buttonUp():
     print("button Up clicked")
+    rows, cols = values.shape
+    print(cols)
+    for row in range(1, rows):
+        for col in range(cols):
+            print(f'Row: {row}, col: {col}')
+            if values[row][col] == 1:
+                values[row-1][col] = 1.0
+                values[row][col] == 0.0
+            else:
+                values[row-1][col] = 0.0
+
+    for col in range(cols):
+        values[rows-1][col] = 0.0
 
 def buttonDown():
     print("button Down clicked")
+    rows, cols = values.shape
+    print(cols)
+    for row in reversed(range(0, rows-1)):
+        for col in range(cols):
+            print(f'Row: {row}, col: {col}')
+            if values[row][col] == 1:
+                values[row+1][col] = 1.0
+                values[row][col] == 0.0
+            else:
+                values[row+1][col] = 0.0
+
+    for col in range(cols):
+        values[0][col] = 0.0
 
 
 def buttonNoise():
@@ -540,17 +565,16 @@ def main():
                 print(values)
                 detectedButton = detectButtonClicked(pos[0], pos[1])
                 screen.fill((255, 255, 255))
-                if detectedButton < 10 or detectedButton > 13:
-                    for row in range(len(rects)):
-                        for col in range(len(rects[row])):
-                            if rects[row][col].collidepoint(pos):
-                                if values[row][col] == 0:
-                                    values[row][col] = 1
-                                else:
-                                    values[row][col] = 0
-                    printPerceptronsOutput()
-                    drawPerceptronsOutput()
-                elif detectedButton == 10:
+                for row in range(len(rects)):
+                    for col in range(len(rects[row])):
+                        if rects[row][col].collidepoint(pos):
+                            if values[row][col] == 0:
+                                values[row][col] = 1
+                            else:
+                                values[row][col] = 0
+                printPerceptronsOutput()
+                drawPerceptronsOutput()
+                if detectedButton == 10:
                     drawMessage("Reset finished.")
                 draw_rectangles()
                 drawUI()
