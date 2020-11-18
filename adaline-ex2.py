@@ -1,6 +1,7 @@
 import pygame
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 
 pygame.init()
 pygame.font.init()
@@ -108,68 +109,126 @@ buttonHeight = 20
 startingWeights = []
 buttonsPressed = []
 
-class Perceptron(object):
 
-  def __init__(self, no_of_inputs, learning_rate=0.01, iterations=1000):
-    self.iterations = iterations
-    self.learning_rate = learning_rate
-    self.no_of_inputs = no_of_inputs
-    self.weights = np.random.rand(self.no_of_inputs + 1)
-    self.weights = self.weights/10
-    startingWeights = self.weights
+def fourier_transform(x):
+    a = np.abs(np.fft.fft(x))
+    a[0] = 0
+    return a/np.max(a)
 
-  def train(self, training_data, labels):
-    print("Training data:")
-    print(training_data)
-    print("labels:")
-    print(labels)
-    for _ in range(self.iterations):
-      for input, label in zip(training_data, labels):
-        input = self.noisy(np.copy(input))
-        prediction = self.output(input)
-        self.weights[1:] += self.learning_rate * (label - prediction) * input
-        self.weights[0] += self.learning_rate * (label - prediction)
+class Adaline(object):
 
-  def correctPredictions(self, training_data_list):
-        result = 0
-        for input, label in training_data_list:
-            prediction = self.output(input)
-            err = label - prediction
-            if err == 0:
-                result += 1
-        return result
+    def __init__(self, no_of_input, learning_rate=0.01, iterations=5000, biased=False):
+        self.no_of_input = no_of_input
+        self.learning_rate = learning_rate
+        self.iterations = iterations
+        self.weights = np.random.random(2*self.no_of_input + 1) # Zadanie domowe: dodanie biasu jest opcjonalne
+        self.errors = []
 
-  def checkAllPredictions(self, training_data_list):
-        x = 0
-        for input, label in training_data_list:
-            prediction = self.output(input)
-            err = label - prediction
-            print(f'{x}: {err}')
-            if err != 0:
-                print("returning false")
-                return False
-            x += 1
-        print("returning true")
-        return True
+    def _add_bias(self, x):
+        if self.biased:
+            return x #x.np.hstack!!!
+        else:
+            return x
+    
+    def _standarise_features(self, x):
+         return (x - np.mean(x))/np.std(x)
+           
 
-  def output(self, input):
-    summation = np.dot(self.weights[1:], input) + self.weights[0]
-    if summation > 0:
-      activation = 1
-    else:
-      activation = 0
-    return activation
+    def train(self, training_data_x, training_data_y):
+        for _ in range(self.iterations):
+            e = 0
+            for x,y in zip(training_data_x, training_data_y):
+                out = self.output(x)
+                # print(x)
+                # print("x after concat:")
+                
+                # print(x)
+                # print(out)
+                # print(y)
+                # print(y-out)
+                x_ft = np.concatenate([x, fourier_transform(x)])
+                # print(self.learning_rate * (y - out) *x )
+                self.weights[1:] += self.learning_rate * (y - out) * x_ft #Co gdy mamy funkcje aktywacji - zmiana pochodnej
+                self.weights[0] += self.learning_rate * (y - out) #* 1
+                e += 0.5 * (y - out)**2
+                self.errors.append(e)
+        plt.plot(range(len(self.errors)), self.errors)
+        # plt.savefig('error.pdf')
+        # plt.show()
 
-  def noisy(self, input):
-    for value in range(len(input)):
-        if random.random() <= 0.005:
-             input[value] = (-1) * input[value] + 1
-    return input
+    def activation(self, x): # Dodac funkcje aktywacji -> zmiana pochodnej
+            return x #1/(1 + np.exp(-x))#x -sigmoid (wymaga zmiany pochodnej czastkowej - patrz wyzej)
+  
+    def output(self, input):
+            inp = self._standarise_features(input)
+            inp = np.concatenate([inp, fourier_transform(inp)])
+            summation = self.activation(np.dot(self.weights[1:], inp) + self.weights[0])
+            # print("dot + activation:")
+            # print(summation)
+            return summation
+
+# class Perceptron(object):
+
+#   def __init__(self, no_of_inputs, learning_rate=0.01, iterations=1000):
+#     self.iterations = iterations
+#     self.learning_rate = learning_rate
+#     self.no_of_inputs = no_of_inputs
+#     self.weights = np.random.rand(self.no_of_inputs + 1)
+#     self.weights = self.weights/10
+#     startingWeights = self.weights
+
+#   def train(self, training_data, labels):
+#     print("Training data:")
+#     print(training_data)
+#     print("labels:")
+#     print(labels)
+#     for _ in range(self.iterations):
+#       for input, label in zip(training_data, labels):
+#         input = self.noisy(np.copy(input))
+#         prediction = self.output(input)
+#         self.weights[1:] += self.learning_rate * (label - prediction) * input
+#         self.weights[0] += self.learning_rate * (label - prediction)
+
+#   def correctPredictions(self, training_data_list):
+#         result = 0
+#         for input, label in training_data_list:
+#             prediction = self.output(input)
+#             err = label - prediction
+#             if err == 0:
+#                 result += 1
+#         return result
+
+#   def checkAllPredictions(self, training_data_list):
+#         x = 0
+#         for input, label in training_data_list:
+#             prediction = self.output(input)
+#             err = label - prediction
+#             print(f'{x}: {err}')
+#             if err != 0:
+#                 print("returning false")
+#                 return False
+#             x += 1
+#         print("returning true")
+#         return True
+
+#   def output(self, input):
+#     summation = np.dot(self.weights[1:], input) + self.weights[0]
+#     if summation > 0:
+#       activation = 1
+#     else:
+#       activation = 0
+#     return activation
+
+#   def noisy(self, input):
+#     for value in range(len(input)):
+#         if random.random() <= 0.005:
+#              input[value] = (-1) * input[value] + 1
+#     return input
 
 
 def setPerceptrons():
     for _ in range(10):
-        perceptrons.append(Perceptron(7*7))
+        perceptrons.append(Adaline(7*7))
 
     for i in range(10):
         labels = np.zeros(10)
@@ -185,16 +244,24 @@ def drawPerceptronsOutput():
     result = ""
     detected = False
 
+    max = -1000
+    maxIndex = -1
     for x in range(10):
-        if perceptrons[x].output(np.ravel(values)) == 1:
-            result += f" {x},"
+        _output = perceptrons[x].output(np.ravel(values))
+        if _output > 0.00: # prog
+            if _output > max:
+                max = _output
+            # result += f" {x},"
+                maxIndex = x
             detected = True
 
     if detected == False:
         result += " None."
+    else:
+        result += f"{maxIndex}"
 
     textSurface1 = myfont.render("Digits detected by perceptrons:", False, (0, 0, 0))
-    textSurface2 = myfont.render(result[:-1], False, (0, 0, 0)) #wypisanie bez ostatniego znaku - przecinka
+    textSurface2 = myfont.render(result, False, (0, 0, 0)) #wypisanie bez ostatniego znaku - przecinka
     screen.blit(textSurface1,(10,330))
     screen.blit(textSurface2,(10,350))
     pygame.display.flip()
@@ -473,7 +540,6 @@ def buttonDown():
 
     for col in range(cols):
         values[0][col] = 0.0
-
 
 def buttonNoise():
     print("button Noise clicked")
