@@ -24,9 +24,9 @@ number[1] = [
     [0.0,0.0,0.0,0.0,0.0,0.0,0.0],
     [0.0,0.0,0.0,1.0,0.0,0.0,0.0],
     [0.0,0.0,1.0,1.0,0.0,0.0,0.0],
-    [0.0,1.0,0.0,1.0,0.0,0.0,0.0],
     [0.0,0.0,0.0,1.0,0.0,0.0,0.0],
     [0.0,0.0,0.0,1.0,0.0,0.0,0.0],
+    [0.0,0.0,1.0,1.0,1.0,0.0,0.0],
     [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
 ]
 number[2] = [
@@ -138,7 +138,7 @@ class Adaline(object):
         for _ in range(self.iterations):
             e = 0
             for x,y in zip(training_data_x, training_data_y):
-                out = self.output(x)
+                # out = self.output(x)
                 # print(x)
                 # print("x after concat:")
                 
@@ -146,7 +146,8 @@ class Adaline(object):
                 # print(out)
                 # print(y)
                 # print(y-out)
-                x_ft = np.concatenate([x, fourier_transform(x)])
+                x_ft = self._standarise_features(np.concatenate([x, fourier_transform(x)]))
+                out = self.output(x_ft)
                 # print(self.learning_rate * (y - out) *x )
                 self.weights[1:] += self.learning_rate * (y - out) * x_ft #Co gdy mamy funkcje aktywacji - zmiana pochodnej
                 self.weights[0] += self.learning_rate * (y - out) #* 1
@@ -160,9 +161,9 @@ class Adaline(object):
             return x #1/(1 + np.exp(-x))#x -sigmoid (wymaga zmiany pochodnej czastkowej - patrz wyzej)
   
     def output(self, input):
-            inp = self._standarise_features(input)
-            inp = np.concatenate([inp, fourier_transform(inp)])
-            summation = self.activation(np.dot(self.weights[1:], inp) + self.weights[0])
+            # inp = self._standarise_features(input)
+            # inp = np.concatenate([inp, fourier_transform(inp)])
+            summation = self.activation(np.dot(self.weights[1:], input) + self.weights[0])
             # print("dot + activation:")
             # print(summation)
             return summation
