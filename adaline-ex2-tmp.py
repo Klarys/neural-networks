@@ -103,7 +103,6 @@ number[9] = [
 ]
 training_inputs = []
 training_inputs = [ np.ravel(n) for n in number ]
-training_inputs_standarized = []
 allLabels = []
 no_of_ui_buttons = 16
 buttonHeight = 20
@@ -121,7 +120,7 @@ def _standarise_features(x):
 
 class Adaline(object):
 
-    def __init__(self, no_of_input, learning_rate=0.01, iterations=10000, biased=False):
+    def __init__(self, no_of_input, learning_rate=0.01, iterations=5000, biased=False):
         self.no_of_input = no_of_input
         self.learning_rate = learning_rate
         self.iterations = iterations
@@ -130,46 +129,30 @@ class Adaline(object):
 
     def _add_bias(self, x):
         if self.biased:
-            return x.np.hstack()
+            return x #x.np.hstack!!!
         else:
             return x
-    
 
     def train(self, training_data_x, training_data_y):
+        preprocessed_training_data_x = _standarise_features(training_data_x)
         for _ in range(self.iterations):
             e = 0
-            for x,y in zip(training_data_x, training_data_y):
-                # out = self.output(x)
-                # print(x)
-                # print("x after concat:")
-                
-                # print(x)
-                # print(out)
-                # print(y)
-                # print(y-out)
+            for x,y in zip(preprocessed_training_data_x, training_data_y):
                 out = self.output(x)
-                # print(self.learning_rate * (y - out) *x )
-                self.weights[1:] += self.learning_rate * (y - out) * x * self.derivative(x) #Co gdy mamy funkcje aktywacji - zmiana pochodnej
+                _x = np.concatenate([x, fourier_transform(x)])
+                self.weights[1:] += self.learning_rate * (y - out) * _x #Co gdy mamy funkcje aktywacji - zmiana pochodnej
                 self.weights[0] += self.learning_rate * (y - out) #* 1
                 e += 0.5 * (y - out)**2
                 self.errors.append(e)
         plt.plot(range(len(self.errors)), self.errors)
-        # plt.savefig('error.pdf')
-        # plt.show()
-
+        plt.savefig('error.pdf')
+    
     def activation(self, x): # Dodac funkcje aktywacji -> zmiana pochodnej
-        return 1/(1 + np.exp(-x))#x -sigmoid (wymaga zmiany pochodnej czastkowej - patrz wyzej)
-
-    def derivative(self, x):
-        return 1/(1 + np.exp(-x)) * (1 - (1/(1 + np.exp(-x))))
-        
+            return x # 1/(1 + np.exp(-x)) -sigmoid (wymaga zmiany pochodnej czastkowej - patrz wyzej)
   
     def output(self, input):
-            # inp = self._standarise_features(input)
-            # inp = np.concatenate([inp, fourier_transform(inp)])
-            summation = self.activation(np.dot(self.weights[1:], input) + self.weights[0])
-            # print("dot + activation:")
-            # print(summation)
+            inp = np.concatenate([input, fourier_transform(input)])
+            summation = self.activation(np.dot(self.weights[1:], inp) + self.weights[0])
             return summation
 
 # class Perceptron(object):
@@ -233,18 +216,6 @@ class Adaline(object):
 
 def setPerceptrons():
     global training_inputs
-    global training_inputs_standarized
-
-    print("BE:")
-    print(training_inputs)
-
-    for input in training_inputs:
-        # training_inputs_standarized.append(np.concatenate([input, fourier_transform(input)]))
-        training_inputs_standarized.append(np.concatenate([_standarise_features(input), fourier_transform(_standarise_features(input))]))
-        # training_inputs_standarized.append(_standarise_features(np.concatenate([input, fourier_transform(input)])))
-
-    print("AF:")
-    print(training_inputs_standarized)
 
     for _ in range(10):
         perceptrons.append(Adaline(7*7))
@@ -253,13 +224,12 @@ def setPerceptrons():
         labels = np.zeros(10)
         labels[i] = 1
         allLabels.append(labels)
-        perceptrons[i].train(training_inputs_standarized, labels)
+        perceptrons[i].train(training_inputs, labels)
 
 def printPerceptronsOutput(): 
     for x in range(10):
-        # print(f'Perceptron {x}: {perceptrons[x].output(np.concatenate([_standarise_features(np.ravel(values)), fourier_transform(_standarise_features(np.ravel(values)))]))}')
+        print(f'Perceptron {x}: {perceptrons[x].output(_standarise_features(np.ravel(values)))}')
         # print(f'Perceptron {x}: {perceptrons[x].output(_standarise_features(np.concatenate([np.ravel(values), fourier_transform(np.ravel(values))])))}')
-        print(f'Perceptron {x}: {perceptrons[x].output(np.concatenate([np.ravel(values), fourier_transform(np.ravel(values))]))}')
 
 def drawPerceptronsOutput():
     result = ""
@@ -268,8 +238,7 @@ def drawPerceptronsOutput():
     max = -1000
     maxIndex = -1
     for x in range(10):
-        # _output = perceptrons[x].output((np.concatenate([_standarise_features(np.ravel(values)), fourier_transform(_standarise_features(np.ravel(values)))])))
-        _output = perceptrons[x].output((np.concatenate([np.ravel(values), fourier_transform(np.ravel(values))])))
+        _output = perceptrons[x].output(_standarise_features(np.ravel(values)))
         if _output > 0.00: # prog
             if _output > max:
                 max = _output
