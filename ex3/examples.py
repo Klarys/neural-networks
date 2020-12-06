@@ -19,18 +19,12 @@ class Examples(object):
     alpha = np.random.random() * np.pi
     beta = np.random.random() * np.pi
     self.output.append([alpha, beta])
-    print(f'a: {alpha} | b: {beta}')
     temppoint = self.translate(self.center, alpha)
-    
-    finalpoint = self.translate(temppoint, np.pi - beta + alpha)
-    print(f'x: {finalpoint.x} | y: {finalpoint.y}')
-    # finalpoint.x = finalpoint.x/(2*self.arm_length)
-    # finalpoint.y = finalpoint.y/(2*self.arm_length)
+    finalpoint = self.translate(temppoint, np.pi - beta + alpha )
     return finalpoint
 
   def translate(self, center, angle):
-    # print(f'center: {center.x} | {}')
-    return Point(center.x + np.cos(angle), center.y - np.sin(angle))
+    return Point(center.x + self.arm_length * np.sin(angle), center.y - self.arm_length * np.cos(angle))
 
 class Point(object):
 
