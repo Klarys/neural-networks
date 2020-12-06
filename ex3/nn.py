@@ -20,6 +20,7 @@ class Neural_Network(object):
     return s * (1 - s) 
 
   def forward(self, x):
+    # print(x[0])
     self.y0 = np.array(x).copy()
     self.a1 = np.dot(self.y0, self.W1)
     self.y1 = self.sigmoid(self.a1)
